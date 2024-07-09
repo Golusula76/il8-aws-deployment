@@ -1,0 +1,788 @@
+from pydantic import BaseModel,  Field
+from typing import Optional, List
+from fastapi import UploadFile, File
+from datetime import date
+from enum import Enum
+from sqlalchemy import JSON
+
+#######################Company################################
+class CompanyCreate(BaseModel):
+    name: str
+
+
+class CompanyUpdate(BaseModel):
+    name: str
+
+
+####################Branch#######################################
+class BranchCreate(BaseModel):
+    name: str
+
+
+class BranchUpdate(BaseModel):
+    name: str
+
+
+###################Designation###################################
+class DesignationCreate(BaseModel):
+    name: str
+
+
+class DesignationUpdate(BaseModel):
+    name: str
+
+
+#####################Usertype#######################################
+class UserTypeCreate(BaseModel):
+    name: str
+
+
+class UserTypeUpdate(BaseModel):
+    name: str
+
+
+####################Student###########################################
+class StudentBase(BaseModel):
+    first_name: str
+    middle_name: Optional[str]
+    last_name: str
+    date_of_birth: date
+    gender: str
+    nationality: str
+    citizenship_status: str
+    date_of_joining: date
+    date_of_completion: Optional[date]
+    
+
+class StudentCreate(StudentBase):
+    pass
+
+
+class StudentUpdate(BaseModel):
+    first_name: Optional[str]
+    middle_name: Optional[str]
+    last_name: Optional[str]
+    date_of_birth: Optional[date]
+    gender: Optional[str]
+    nationality: Optional[str]
+    citizenship_status: Optional[str]
+    date_of_joining: Optional[date]
+    date_of_completion: Optional[date]
+    id_proof: Optional[str]
+    address_proof: Optional[str]
+
+
+class StudentSchema(StudentBase):
+    students_id: int
+
+
+
+class Student(StudentBase):
+    id: int
+    user_id: int
+
+
+
+
+    class Config:
+        from_attributes = True
+
+##############################CoureDetails########################
+from pydantic import BaseModel
+
+class CourseDetailsCreate(BaseModel):
+    subject: str
+    standard: str
+    module: str
+    course: str
+
+class CourseDetailsUpdate(BaseModel):
+    subject: str
+    standard: str
+    module: str
+    course: str
+
+
+##################################user#############################
+class LoginInput(BaseModel):
+    email: str
+    user_password: str
+
+
+class ChangePassword(BaseModel):
+    current_password: str
+    new_password: str
+
+    class Config:
+        from_attributes = True
+
+
+class UserType(str, Enum):
+    admin = "admin"
+    student = "student"
+    teacher = "teacher"
+    user = "user"
+    parent = "parent"
+
+
+class UserCreate(BaseModel):
+    user_name: str
+    user_email: str
+    user_password: str
+    user_type: UserType = UserType.user
+    phone_no: str
+
+    class Config:
+        from_attributes = True
+
+
+class UpdateUser(BaseModel):
+    user_name: Optional[str] = None
+    user_email: Optional[str] = None
+    phone_no: Optional[int] = None
+    user_type: Optional[str] = None
+    current_password: Optional[str] = None
+    new_password: Optional[str] = None
+
+
+################################DemoFormFill###############################
+class DemoformfillCreate(BaseModel):
+    #user_id: int
+    name: str
+    email_id: str
+    contact_no: str
+    standard: str
+    course: str
+    subject:str
+    school: str
+    teaching_mode: str
+    other_info: str
+
+
+class DemoformfillResponse(BaseModel):
+    FormID: int
+    GuestId: int
+    Name: str
+    EmailId: str
+    ContactNo: str
+    Standard: str
+    Course: str
+    School: str
+    TeachingMode: str
+    OtherInfo: str
+
+
+##############################Parent#################################
+class ParentBase(BaseModel):
+    p_first_name: str
+    p_middle_name: Optional[str]
+    p_last_name: str
+    guardian: str
+    primary_no: str
+    secondary_no: Optional[str]
+    primary_email: str
+    secondary_email: Optional[str]
+
+
+class ParentCreate(ParentBase):
+    pass
+
+
+class ParentInfoUpdate(ParentBase):
+    p_first_name: Optional[str] = None
+    p_middle_name: Optional[str] = None
+    p_last_name: Optional[str] = None
+    guardian: Optional[str] = None
+    primary_no: Optional[str] = None
+    secondary_no: Optional[str] = None
+    primary_email: Optional[str] = None
+    secondary_email: Optional[str] = None
+
+
+class Parent(ParentBase):
+    parent_id: int
+    student_id: int
+
+    class Config:
+        from_attributes = True
+
+
+#########################studentContact#####################################
+class StudentContactBase(BaseModel):
+    primary_no: str
+    secondary_no: Optional[str]
+    primary_email: str
+    secondary_email: Optional[str]
+    current_address: str
+    permanent_address: str
+
+
+class StudentContactCreate(StudentContactBase):
+    pass
+
+
+class StudentContactUpdate(StudentContactBase):
+    primary_no: Optional[str] = None
+    secondary_no: Optional[str] = None
+    primary_email: Optional[str] = None
+    secondary_email: Optional[str] = None
+    current_address: Optional[str] = None
+    permanent_address: Optional[str] = None
+
+
+class StudentContact(StudentContactBase):
+    student_id: int
+
+    class Config:
+        from_attributes = True
+
+
+#######################StudentEducation######################################
+class PreEducationBase(BaseModel):
+    student_class: str
+    school: str
+    year_of_passing: int
+    percentage: float
+
+
+class PreEducationCreate(PreEducationBase):
+    pass
+
+
+class PreEducationUpdate(PreEducationBase):
+    student_class: Optional[str] = None
+    school: Optional[str] = None
+    year_of_passing: Optional[int] = None
+    percentage: Optional[float] = None
+
+
+class PreEducation(PreEducationBase):
+    id: int
+    student_id: int
+
+    class Config:
+        from_attributes = True
+
+
+############# courses ########################################################
+
+
+class CourseBase(BaseModel):
+    name: str
+
+
+class CourseCreate(CourseBase):
+    pass
+
+class CourseUpdate(BaseModel):
+    name:str
+
+
+################## subjects ################################################
+
+class SubjectBase(BaseModel):
+    name: str
+
+class SubjectCreate(SubjectBase):
+    name: str
+
+class SubjectUpdate(BaseModel):
+    name: Optional[str] = None
+    standard_id:Optional[int] =None
+
+
+#############################Standard##########################################
+class StandardBase(BaseModel):
+    name: str
+
+class StandardCreate(StandardBase):
+    name: str
+
+
+class StandardUpdate(BaseModel):
+    name: Optional[str] = None
+    course_id:Optional[int] =None
+
+
+####################Module#########################################
+class ModuleBase(BaseModel):
+    name: str
+
+
+class ModuleCreate(ModuleBase):
+    name: str
+
+class ModuleUpdate(BaseModel):
+    name: Optional[str] = None
+    subject_id:Optional[int] =None
+
+
+  
+###################Lesson##########################################
+class LessonCreate(BaseModel):
+    title: str
+    description: str
+
+class LessonResponse(BaseModel):
+    lesson_id: int
+    title: str
+    description: str
+
+##############################DemoVideo#############################
+# class DemoVideoCreate(BaseModel):
+#     title: str
+#     url: str
+#     course_id: int
+#     subject_id: int
+#     standard_id: int
+
+class VideoBase(BaseModel):
+    name: str
+    url: str
+
+
+class VideoCreate(VideoBase):
+    pass
+
+
+class Video(VideoBase):
+    id: int
+    course_id: int
+    standard_id: int
+    subject_id: int
+
+    class Config:
+        from_attributes = True
+
+######################################Inquiry##################################################
+class InquiryCreate(BaseModel):
+    name: str
+    email: str
+    phone: str
+    message: str
+
+class InquiryUpdate(BaseModel):
+    name: Optional[str]
+    email: Optional[str]
+    phone: Optional[str]
+    message: Optional[str]
+
+#####################################fees######################################################
+class FeeCreate(BaseModel):
+    course_id : int
+    standard_id : int
+    year : int 
+    subject_id : int
+    module_id: int 
+    batch_id : int
+    amount : float 
+    
+
+class FeeUpdate(BaseModel):
+    course_id : int
+    standard_id : int
+    year : int 
+    subject_id : int
+    modules_id : int
+    batch_id : int
+    amount : float 
+
+###################Batches###################################
+class BatchCreate(BaseModel):
+    size:str
+
+class BatchUpdate(BaseModel):
+    size:str
+
+
+######################################  paper  Table ##################################################
+
+# Pydantic schema for Paper
+class PaperCreate(BaseModel):
+    title: str
+    description: str
+    user_id: int
+
+# Pydantic schema for Paper response
+class PaperResponse(BaseModel):
+    paper_id: int
+    title: str
+    description: str
+    user_id: int
+
+#########################################################
+#####################################  Question ##################################################
+
+class QuestionCreate(BaseModel):
+    question_text: str
+    question_image: Optional[str] = None
+    options1_text: str
+    options1_images: Optional[str] = None
+    options2_text: str
+    options2_images: Optional[str] = None
+    options3_text: str
+    options3_images: Optional[str] = None
+    options4_text: str
+    options4_images: Optional[str] = None
+    correct_answer_text: str
+    correct_answer_image: Optional[str] = None
+    difficulty_level: str
+
+
+class QuestionGetResponse(BaseModel):
+    question_id: int
+    question_text: str
+    question_image: Optional[str] = None
+    options1_text: str
+    options1_images: Optional[str] = None
+    options2_text: str
+    options2_images: Optional[str] = None
+    options3_text: str
+    options3_images: Optional[str] = None
+    options4_text: str
+    options4_images: Optional[str] = None
+    correct_answer_text: str
+    correct_answer_image: Optional[str] = None
+    given_answer_text: Optional[str] = None  
+    given_answer_image: Optional[str] = None  
+    difficulty_level: str
+
+###################################### Question  paper Table ##################################################
+
+class QuestionPaperCreate(BaseModel):
+    title: str
+    description: str
+    teacher_id: int
+    student_id: int
+    subject_id: int
+    module_id: int
+    lesson_id: int
+    test_id: int 
+
+
+class QuestionPaperResponse(BaseModel):
+    id: int
+    title: str
+    description: str
+    teacher_id: int
+    student_id: int
+    subject_id: int
+    module_id: int
+    lesson_id: int
+    test_id: Optional[int]
+######################################  Question  paper with mapping ID ##################################################
+
+
+# Pydantic schema for QuestionMapping
+class QuestionMappingCreate(BaseModel):
+    paper_id: int
+    question_id: int
+
+class QuestionMappingResponse(BaseModel):
+    mapping_id: int
+    paper_id: int
+    question_id: int
+
+######################################  Test ##################################################
+
+class TestBase(BaseModel):
+    description: str
+    teacher_id: int
+    student_id: int
+    lesson_id: int
+
+
+class TestCreate(TestBase):
+    pass
+
+
+class TestUpdate(TestBase):
+    pass
+
+
+class TestResponse(TestBase):
+    test_id: int
+
+
+######################################  payments ##################################################
+
+# Pydantic schemas for request and response models
+class PaymentCreate(BaseModel):
+    course_id: int
+    standard_id: int
+    subject_id: int
+    module_id: int
+    batch_id: int
+    years: Optional[int] = None
+    amount: Optional[float] = None
+    payment_mode: Optional[str] = None
+    payment_info: Optional[str] = None
+    other_info: Optional[str] = None
+
+class PaymentResponse(BaseModel):
+    payment_id: int
+    student_id: int
+    course_id: int
+    payment_date: date
+    amount: float
+    payment_status: str
+    description: str
+######################################  Installmenst ##################################################
+
+class PaymentDetails(BaseModel):
+    installment_id: int
+    payment_id: int
+    total_amount: float
+    installment_number: int
+    due_dates: List[str]
+    installments: List[dict]
+
+class InstallmentResponse(BaseModel):
+    installment_id: int
+    total_amount: float
+    installment_number: int
+    installments: str
+    due_dates: str
+   
+    
+
+class Installment(BaseModel):
+    installment_id: int
+    payment_id: int
+    total_amount: float
+    installment_number: int
+    due_date: date
+    installment_amount: float
+
+######################################  contents ##################################################
+
+class ContentCreate(BaseModel):
+    name: str
+    description: str
+    content_type: str
+    lesson_id: int
+
+class ContentCreateRequest(BaseModel):
+    name: str
+    description: str = None
+    content_type: str = None
+    lesson_id: int
+    files:List[UploadFile]= None
+
+
+######################################  students ##################################################
+
+class StudentSchema(BaseModel):
+    
+    user_id: int
+    first_name: str
+    middle_name: Optional[str]
+    last_name: str
+    date_of_birth: date
+    gender: str
+    nationality: str
+    citizenship_status: str
+    date_of_joining: date
+    date_of_completion: Optional[date]
+
+class StudentGetResponse(BaseModel):
+    id: int
+    user_id: Optional[int] = None  # Make it optional
+    first_name: str
+    middle_name: Optional[str] = None
+    last_name: str
+    date_of_birth: str
+    gender: str
+    nationality: str
+    citizenship_status: str
+    date_of_joining: str
+    date_of_completion: Optional[str] = None
+
+#  ------------------------------------------------------------------------------------------------------------------
+                       #Teacher All data
+#  ------------------------------------------------------------------------------------------------------------------
+
+
+######################### teacher contact info  #####################################
+
+class ContactInformationBase(BaseModel):
+    primary_number: str = Field(..., max_length=50)
+    secondary_number: str = Field(None, max_length=50)
+    primary_email_id: str = Field(..., max_length=50)
+    secondary_email_id: str = Field(None, max_length=50)
+    current_address: str = Field(..., max_length=255)
+    permanent_address: str = Field(..., max_length=255)
+
+class ContactInformationCreate(ContactInformationBase):
+    pass
+
+class ContactInformationUpdate(ContactInformationBase):
+    pass
+
+######################### teacher education  #####################################
+
+class EducationBase(BaseModel):
+    education_level: str
+    institution: str
+    specialization: str
+    field_of_study: str
+    year_of_passing: int
+    percentage: float
+
+class EducationCreate(EducationBase):
+    pass
+
+class EducationUpdate(EducationBase):
+    pass
+
+class Education(EducationBase):
+    id: int
+
+######################### teacher skills  #####################################
+class SkillBase(BaseModel):
+    skill: str
+    certification: str
+    license: str
+
+class SkillCreate(SkillBase):
+    pass
+
+class SkillUpdate(SkillBase):
+    pass
+
+class Skill(SkillBase):
+    id: int
+
+######################### teacher language knowledge  #####################################
+
+class LanguagesSpokenBase(BaseModel):
+    languages: str
+
+class LanguagesSpokenCreate(LanguagesSpokenBase):
+    pass
+
+class LanguagesSpokenUpdate(LanguagesSpokenBase):
+    pass
+
+class LanguagesSpoken(LanguagesSpokenBase):
+    id: int
+
+######################### teacher EmergencyContact #####################################
+
+class EmergencyContactBase(BaseModel):
+    emergency_contact_name: str
+    relation: str
+    emergency_contact_number: int
+
+class EmergencyContactCreate(EmergencyContactBase):
+    pass
+
+class EmergencyContactUpdate(EmergencyContactBase):
+    pass
+
+class EmergencyContact(EmergencyContactBase):
+    id: int
+
+######################### teacher depends #####################################
+class DependentsBase(BaseModel):
+    dependent_name: str
+    realtion: str
+    date_of_birth: date
+
+class DependentsCreate(DependentsBase):
+    pass
+
+class DependentsUpdate(DependentsBase):
+    pass
+
+
+######################### Employee Master Table #####################################
+class EmployeeBase(BaseModel):
+    f_name: str
+    m_name: Optional[str]
+    l_name: str
+    dob: date
+    gender: str
+    nationality: str
+    marital_status: str
+    citizenship_status: str
+    date_of_hire: Optional[date]
+    date_of_termination: Optional[date]
+   
+
+class EmployeeCreate(EmployeeBase):
+    pass
+
+class EmployeeUpdate(EmployeeBase):
+    pass
+
+
+######################### Manager #####################################
+
+class ManagerBase(BaseModel):
+    name: str
+    gender: str
+    department: str
+
+class ManagerCreate(ManagerBase):
+    pass
+
+class ManagerUpdate(ManagerBase):
+    pass
+
+class ManagerInDBBase(ManagerBase):
+    manager_id: int
+
+
+######################################  Teacher ##################################################
+
+# Pydantic schema for Teacher
+class TeacherCreate(BaseModel):
+    name: str
+    email: str
+    department: str
+
+# Pydantic schema for Teacher response
+class TeacherResponse(BaseModel):
+    Teacher_id: int
+    name: str
+    email: str
+    department: str
+    
+class TeacherUpdate(BaseModel):
+    name: str
+    email: str
+    department: str
+
+
+class CourseDetailsResponse(BaseModel):
+    subjects: List[int]
+    standards: List[int]
+    modules: List[int]
+    courses: List[int]
+
+class StudentResponse(BaseModel):
+    user_id: int
+    first_name: str
+    middle_name: str
+    last_name: str
+    date_of_birth: str
+    gender: str
+    nationality: str
+    referral: str
+    date_of_joining: str
+    date_of_completion: str
+    id_proof_url: str
+    address_proof_url: str
+    contact_info: dict
+    pre_education: dict
+    parent_info: dict
+    course_details: CourseDetailsResponse
+
+######################################  Mail ##################################################
+class MailCreate(BaseModel):
+    email: Optional[str] = None
+    message: Optional[str] = None
+    name: Optional[str] = None
+    phone: Optional[str] = None
+    subject: Optional[str] = None
